@@ -85,32 +85,72 @@ flash expr: (build expr)
 draw: _check_yq_version
     #!/usr/bin/env bash
     set -euo pipefail
-    keymap -c "{{ draw }}/config.yaml" parse -z "{{ config }}/base.keymap" --virtual-layers Combos >"{{ draw }}/base.yaml"
-    yq -Yi '.combos.[].l = ["Combos"]' "{{ draw }}/base.yaml"
+
+    # yq has no flow-style output, so re-emit the generated yaml with leaf nodes
+    # (key legends, combo definitions) in flow style: one key per line.
+    compact_py='
+    import sys
+
+    import yaml
+
+    def leaf(value):
+        return value is None or isinstance(value, (str, int, float, bool)) or (
+            isinstance(value, list) and all(leaf(i) for i in value)
+        )
+
+    def compact(node):
+        children = node.values() if isinstance(node, dict) else node
+        return isinstance(node, (dict, list)) and all(leaf(i) for i in children)
+
+    class Dumper(yaml.SafeDumper):
+        def increase_indent(self, flow=False, indentless=False):
+            return super().increase_indent(flow, False)
+
+    Dumper.add_representer(
+        dict, lambda d, n: d.represent_mapping("tag:yaml.org,2002:map", n, flow_style=compact(n))
+    )
+    Dumper.add_representer(
+        list, lambda d, n: d.represent_sequence("tag:yaml.org,2002:seq", n, flow_style=compact(n))
+    )
+
+    with open(sys.argv[1]) as f:
+        data = yaml.safe_load(f)
+
+    yaml.dump(data, sys.stdout, Dumper=Dumper, allow_unicode=True, sort_keys=False, width=96)
+    '
+    compact_yaml() { python3 -c "$compact_py" "$1"; }
+
+    base_block=$(mktemp)
+    overview_block=$(mktemp)
+    trap 'rm -f "$base_block" "$overview_block"' EXIT
+
+    keymap -c "{{ draw }}/config.yaml" parse -z "{{ config }}/base.keymap" --virtual-layers Combos \
+        -l Qwerty Lower Raise Mouse >"$base_block"
+    yq -Yi '.combos.[].l = ["Combos"]' "$base_block"
+    compact_yaml "$base_block" >"{{ draw }}/base.yaml"
     keymap -c "{{ draw }}/config.yaml" draw "{{ draw }}/base.yaml" -k "ferris/sweep" >"{{ draw }}/base.svg"
 
     jq_expr='
         def extract_label: if type == "string" then . else .t end;
         def is_transparent: type == "object" and (.type == "trans" or .type == "held");
         .layers = {
-        Base: [
-            [.layers.Base, .layers.Nav, .layers.Fn, .layers.Num, .layers.Sys] | transpose[] |
+        Qwerty: [
+            [.layers.Qwerty, .layers.Lower, .layers.Raise, .layers.Mouse] | transpose[] |
             (.[0] | if type == "string" then {t: .} else . end) as $base |
-            (.[1] | if is_transparent then null else extract_label end) as $nav |
-            (.[2] | if is_transparent then null else extract_label end) as $fn |
-            (.[3] | if is_transparent then null else extract_label end) as $num |
-            (.[4] | if is_transparent then null else extract_label end) as $sys |
+            (.[1] | if is_transparent then null else extract_label end) as $lower |
+            (.[2] | if is_transparent then null else extract_label end) as $raise |
+            (.[3] | if is_transparent then null else extract_label end) as $mouse |
             $base
-            + (if $nav == null then {} else {tr: $nav} end)
-            + (if $fn == null then {} else {tl: $fn} end)
-            + (if $num == null then {} else {bl: $num} end)
-            + (if $sys == null then {} else {br: $sys} end)
+            + (if $lower == null then {} else {tr: $lower} end)
+            + (if $raise == null then {} else {bl: $raise} end)
+            + (if $mouse == null then {} else {br: $mouse} end)
         ],
         Combos: .layers.Combos
         } |
         .combos = [.combos[] | .l = ["Combos"]]
     '
-    yq -y "$jq_expr" "{{ draw }}/base.yaml" >"{{ draw }}/overview.yaml"
+    yq -y "$jq_expr" "$base_block" >"$overview_block"
+    compact_yaml "$overview_block" >"{{ draw }}/overview.yaml"
     keymap -c "{{ draw }}/config.yaml" draw "{{ draw }}/overview.yaml" -k "ferris/sweep" >"{{ draw }}/overview.svg"
     sed -i '/<text.*class="label"/d' "{{ draw }}/overview.svg"
 
@@ -183,6 +223,17 @@ test $testpath *FLAGS:
     build_dir="{{ build / "tests" / '$testcase' }}"
     config_dir=$(realpath "$testpath")
     cd {{ justfile_directory() }}
+
+    if [[ ! -f "$config_dir/native_sim.keymap" ]]; then
+        {
+            echo "Not a testcase directory: $config_dir"
+            echo "A testcase holds native_sim.keymap, events.patterns and keycode_events.snapshot."
+            echo
+            echo "Available testcases:"
+            find modules/zmk -name native_sim.keymap -printf '  %h\n' | sort
+        } >&2
+        exit 1
+    fi
 
     if [[ "{{ FLAGS }}" != *"--no-build"* ]]; then
         echo "Running $testcase..."

@@ -7,66 +7,49 @@ parse_config:
     #define CONFIG_WIRELESS
 
   raw_binding_map:
-    "&sys_reset": Reset
     "&bootloader": Boot
-    "&caps_word": Caps Word
-    "&kp LA(F4)": Close
+    "&leader": Leader
+    "&smart_mouse": Mouse
 
     "&bt BT_SEL 0": BT 1
     "&bt BT_SEL 1": BT 2
     "&bt BT_SEL 2": BT 3
     "&bt BT_SEL 3": BT 4
 
-    "&kp LC(INS)": Copy
-    "&kp LC(X)": Cut
-    "&kp LS(INS)": Paste
+    # home row mods: modifier on the right side of the key
+    "&hml LCTRL A": {t: A, h: Ctrl}
+    "&hml LALT S": {t: S, h: Alt}
+    "&hml LGUI D": {t: D, h: Gui}
+    "&hml LSHFT F": {t: F, h: $$mdi:apple-keyboard-shift$$}
 
-    "&kp LG(LC(LEFT))": PDesk
-    "&kp LG(LC(RIGHT))": NDesk
-    "&kp LG(LC(LS(A)))": PinA.
-    "&kp LG(LC(LS(Q)))": PinW.
+    "&hmr RSHFT J": {t: J, h: $$mdi:apple-keyboard-shift$$}
+    "&hmr RGUI K": {t: K, h: Gui}
+    "&hmr RALT L": {t: L, h: Alt}
+    "&hmr RCTRL SEMI": {t: ";", h: Ctrl}
 
-    "&swapper": NWin
-    "&kp LS(TAB)": PWin
-    "&dot_spc": Sentence
-    "&num_dance": { "t": "Smart"}
-    "&magic_shift": { "t": Magic, "h": "Shift" }
-    "&smart_mouse": Smart Mouse
+    "&mmv MOVE_UP": $$tabler:arrow-up$$
+    "&mmv MOVE_DOWN": $$tabler:arrow-down$$
+    "&mmv MOVE_LEFT": $$tabler:arrow-left$$
+    "&mmv MOVE_RIGHT": $$tabler:arrow-right$$
 
-    "&hml LS(LALT)TAB": Tab
-    "&hm_combo_ldr": Leader
-    "&hm_combo_ldrsh": Shift+Leader
-    "&hm_combo_lpar": { "t": "< (" }
-    "&hm_combo_rpar": { "t": "> )"}
-    "&kp LBKT": { "t": "{ ["}
-    "&kp RBKT": { "t": "} ]"}
+    "&msc SCRL_UP": $$mdi:arrow-collapse-up$$
+    "&msc SCRL_DOWN": $$mdi:arrow-collapse-down$$
+    "&msc SCRL_LEFT": $$mdi:arrow-collapse-left$$
+    "&msc SCRL_RIGHT": $$mdi:arrow-collapse-right$$
 
-    "&mmv MOVE_UP": Mouse ↑
-    "&mmv MOVE_DOWN": Mouse ↓
-    "&mmv MOVE_LEFT": Mouse ←
-    "&mmv MOVE_RIGHT": Mouse →
-
-    "&msc SCRL_UP": Scroll ↑
-    "&msc SCRL_DOWN": Scroll ↓
-    "&msc SCRL_LEFT": Scroll ←
-    "&msc SCRL_RIGHT": Scroll →
-
-    "&mkp LCLK": Left Click
-    "&mkp RCLK": Right Click
-    "&mkp MCLK": Middle Click
-    "&mkp MB4": Back Click
-    "&mkp MB5": Forward Click
+    "&mkp LCLK": $$mdi:mouse-left-click$$
+    "&mkp RCLK": $$mdi:mouse-right-click$$
 
   trans_legend: { "t": "", "type": "trans" }
 
   zmk_combos:
-    combo_cut: { align: bottom, o: 0.15 }
-    combo_ldrsh: { align: top, o: 1.35 }
+    mouse: { align: bottom, o: 0.15 }
+    ldr: { align: top, o: 1.35 }
 
-    combo_lt: { hidden: true }
-    combo_gt: { hidden: true }
-    combo_lbrc: { hidden: true }
-    combo_rbrc: { hidden: true }
+    # combo_lt: { hidden: true }
+    # combo_gt: { hidden: true }
+    # combo_lbrc: { hidden: true }
+    # combo_rbrc: { hidden: true }
 
   zmk_keycode_map:
     # custom mappings
@@ -78,11 +61,15 @@ parse_config:
     RGUI: Gui
     LSHFT: Shift
     RSHFT: Shift
+    
+    KP_NUM: NUM
+    KP 1: { t: "1", h: KP}
+    KP 2: { t: "2", h: KP}
 
-    BSPC: Bspc
+    BSPC: $$mdi:backspace-outline$$
     DEL: Del
     ESC: Esc
-    RET: Enter
+    RET: $$mdi:keyboard-return$$
     SPACE: Spc
     TAB: Tab
 
@@ -99,12 +86,29 @@ parse_config:
 
     K_CANCEL: Cancel
 
+    # numpad
+    KP_NUM: Num
+    KP_PLUS: "+"
+    KP_MINUS: "-"
+    KP_MULTIPLY: "*"
+    KP_DIVIDE: "/"
+    KP_DOT: "."
+    KP_EQUAL: "="
+    KP_N0: "0"
+    KP_N1: "1"
+    KP_N2: "2"
+    KP_N3: "3"
+    KP_N4: "4"
+    KP_N5: "5"
+    KP_N6: "6"
+    KP_N7: "7"
+    KP_N8: "8"
+    KP_N9: "9"
+
     C_MUTE: $$mdi:volume-off$$
     C_PP: $$mdi:play-pause$$
     C_VOL_UP: $$mdi:volume-high$$
     C_VOL_DN: $$mdi:volume-medium$$
-    C_NEXT: $$mdi:skip-forward$$
-    C_PREV: $$mdi:skip-backward$$
 
     # defaults
     AMPERSAND: "&"
@@ -175,99 +179,106 @@ parse_config:
 draw_config:
   append_colon_to_layer_header: false
   dark_mode: false
-  footer_text: "urob/zmk-config"
+  footer_text: "ms/zmk-config"
   glyph_tap_size: 15
   glyph_hold_size: 12
-  glyph_shifted_size: 10
+  glyph_shifted_size: 9
   legend_rel_y: 1
   outer_pad_w: 10
   outer_pad_h: 10
   small_pad: 4
 
-  svg_style: |
-    svg path { fill: inherit; }
-
-    svg.keymap {
-        --color-bg:      #7c6f64;
-        --color-key:     #fbf1c7;
-        --color-text:    #3c3836;
-        --color-ghost:   #928374;
-        --color-dendron: #d5c4a1;
-        --color-held:    #bdae93;
-
-        --color-fn:      #458588;
-        --color-nav:     #d79921;
-        --color-num:     #d65d0e;
-        --color-sys:     #689d6a;
-
-        fill: var(--color-text);
-        background-color: var(--color-bg);
-        font-family: Calibri, system-ui, sans-serif;
-        font-size: 16px;
-        font-kerning: normal;
-        text-rendering: optimizeLegibility;
-    }
-
-    text {
-        text-anchor: middle;
-        dominant-baseline: middle;
-        letter-spacing: 0.02em;
-    }
-
-    text.tap     { font-weight: 500; }
-    text.hold    { font-weight: 400; font-size: 13px; }
-    text.shifted { font-weight: 400; font-size: 11px; }
-    text.combo, text.left, text.right, text.tl, text.tr, text.bl, text.br { font-size: 10px; }
-
-    text.hold, text.bl, text.br    { text-anchor: middle; dominant-baseline: auto; }
-    text.shifted, text.tl, text.tr { text-anchor: middle; dominant-baseline: hanging; }
-    text.left, text.tl, text.bl    { text-anchor: start; }
-    text.right, text.tr, text.br   { text-anchor: end; }
-
-    text.layer-activator { text-decoration: underline; }
-    text.combo.hold, text.combo.shifted, text.combo.left, text.combo.right { font-size: 8px; }
-
-    text.label, text.footer {
-        fill: var(--color-key);
-        stroke: var(--color-bg);
-        stroke-width: 4;
-        paint-order: stroke;
-    }
-    text.label  { font-weight: bold; text-anchor: start; }
-    text.footer { text-anchor: end; dominant-baseline: auto; }
-
-    rect.key, rect.combo, rect.combo-separate { fill: var(--color-key); stroke-width: 0; }
-    rect.held, rect.combo.held                { fill: var(--color-held); }
-    .layer-Combos rect.key                    { fill: var(--color-ghost); }
-
-    path.combo { stroke: var(--color-dendron); stroke-width: 2; stroke-dasharray: 2, 3; opacity: 0.45; fill: none; }
-
-    text.tl, use.tl { fill: var(--color-fn); }
-    text.tr, use.tr { fill: var(--color-nav); }
-    text.bl, use.bl { fill: var(--color-num); }
-    text.br, use.br { fill: var(--color-sys); }
-
-    .keypos-30 text.hold { fill: var(--color-nav); }
-    .keypos-31 text.hold { fill: var(--color-fn); }
-    .keypos-32 text.hold { fill: var(--color-num); font-size: 15px; }
-    .keypos-32 text.tap  { fill: var(--color-num); }
-    .keypos-33 text.hold { font-size: 15px; }
-
-    .icon-tabler > path                             { fill: inherit; stroke: inherit; stroke-width: 2; }
-    .icon-tabler > path[stroke="none"][fill="none"] { visibility: hidden; }
-
-    @media (prefers-color-scheme: dark) {
-        svg.keymap {
-            --color-bg:      #a89984;
-            --color-key:     #282828;
-            --color-text:    #ebdbb2;
-            --color-ghost:   #928374;
-            --color-dendron: #504945;
-            --color-held:    #665c54;
-
-            --color-fn:      #458588;
-            --color-nav:     #fabd2f;
-            --color-num:     #d65d0e;
-            --color-sys:     #689d6a;
-        }
-    }
+  # svg_style: |
+  #   svg path { fill: inherit; }
+  #
+  #   svg.keymap {
+  #       --color-bg:      #7c6f64;
+  #       --color-key:     #fbf1c7;
+  #       --color-text:    #3c3836;
+  #       --color-ghost:   #928374;
+  #       --color-dendron: #d5c4a1;
+  #       --color-held:    #bdae93;
+  #
+  #       --color-fn:      #458588;
+  #       --color-nav:     #d79921;
+  #       --color-num:     #d65d0e;
+  #       --color-sys:     #689d6a;
+  #
+  #       fill: var(--color-text);
+  #       background-color: var(--color-bg);
+  #       font-family: Calibri, system-ui, sans-serif;
+  #       font-size: 16px;
+  #       font-kerning: normal;
+  #       text-rendering: optimizeLegibility;
+  #   }
+  #
+  #   text {
+  #       text-anchor: middle;
+  #       dominant-baseline: middle;
+  #       letter-spacing: 0.02em;
+  #   }
+  #
+  #   text.tap     { font-weight: 500; }
+  #   text.hold    { font-weight: 400; font-size: 13px; }
+  #   text.shifted { font-weight: 400; font-size: 11px; }
+  #   text.combo, text.left, text.right, text.tl, text.tr, text.bl, text.br { font-size: 10px; }
+  #
+  #   text.hold, text.bl, text.br    { text-anchor: middle; dominant-baseline: auto; }
+  #   text.shifted, text.tl, text.tr { text-anchor: middle; dominant-baseline: hanging; }
+  #   text.left, text.tl, text.bl    { text-anchor: start; }
+  #   text.right, text.tr, text.br   { text-anchor: end; }
+  #
+  #   text.layer-activator { text-decoration: underline; }
+  #   text.combo.hold, text.combo.shifted, text.combo.left, text.combo.right { font-size: 8px; }
+  #
+  #   text.label, text.footer {
+  #       fill: var(--color-key);
+  #       stroke: var(--color-bg);
+  #       stroke-width: 4;
+  #       paint-order: stroke;
+  #   }
+  #   text.label  { font-weight: bold; text-anchor: start; }
+  #   text.footer { text-anchor: end; dominant-baseline: auto; }
+  #
+  #   rect.key, rect.combo, rect.combo-separate { fill: var(--color-key); stroke-width: 0; }
+  #   rect.held, rect.combo.held                { fill: var(--color-held); }
+  #   .layer-Combos rect.key                    { fill: var(--color-ghost); }
+  #
+  #   path.combo { stroke: var(--color-dendron); stroke-width: 2; stroke-dasharray: 2, 3; opacity: 0.45; fill: none; }
+  #
+  #   /* glyphs are drawn as use elements; mdi icons are filled, tabler ones are stroked,
+  #      so tabler picks up its color from `color` (inherited by the use shadow tree).
+  #      note: no angle brackets in this comment, it is embedded in an XML style element */
+  #   use.glyph                             { color: var(--color-text); }
+  #   text.tl, use.tl { fill: var(--color-fn); color: var(--color-fn); }
+  #   text.tr, use.tr { fill: var(--color-nav); color: var(--color-nav); }
+  #   text.bl, use.bl { fill: var(--color-nav); color: var(--color-nav); }
+  #   text.br, use.br { fill: var(--color-sys); color: var(--color-sys); }
+  #
+  #   /* home row mods are the only right-side legends (see raw_binding_map) */
+  #   .layer-Qwerty text.right { fill: var(--color-fn); font-size: 9px; }
+  #   .layer-Qwerty use.right  { fill: var(--color-fn); color: var(--color-fn); }
+  #
+  #   .keypos-30 text.hold { fill: var(--color-nav); }
+  #   .keypos-31 text.hold { fill: var(--color-fn); }
+  #   .keypos-32 text.hold { fill: var(--color-num); font-size: 15px; }
+  #   .keypos-33 text.hold { font-size: 12px; }
+  #
+  #   .icon-tabler > path                             { fill: inherit; stroke: inherit; stroke-width: 2; }
+  #   .icon-tabler > path[stroke="none"][fill="none"] { visibility: hidden; }
+  #
+  #   @media (prefers-color-scheme: dark) {
+  #       svg.keymap {
+  #           --color-bg:      #a89984;
+  #           --color-key:     #282828;
+  #           --color-text:    #ebdbb2;
+  #           --color-ghost:   #928374;
+  #           --color-dendron: #504945;
+  #           --color-held:    #665c54;
+  #
+  #           --color-fn:      #458588;
+  #           --color-nav:     #fabd2f;
+  #           --color-num:     #d65d0e;
+  #           --color-sys:     #689d6a;
+  #       }
+  #   }

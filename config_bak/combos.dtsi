@@ -1,0 +1,62 @@
+/* QMK "ms" cradio combos, ported to ZMK.
+ *
+ * From ~/qmk_firmware/keyboards/cradio/keymaps/ms/combos.def.
+ * Active on DEF NAV NUM. Combos overlapping home-row mods are set up
+ * as tap-only hold-taps (ZMK_COMBO_8) with the opposite hand + thumbs
+ * as hold-trigger-key-positions, matching base.keymap's conventions.
+ *
+ * Requires: included from base.keymap AFTER the ZMK_COMBO_8 hack /
+ * MAKE_HRM definitions; DEF/NAV/NUM and key positions from 34.h.
+ * Do NOT include together with combos.dtsi (shared trigger positions).
+
+                KEY POSITIONS
+
+  ╭─────────────────────╮ ╭─────────────────────╮
+  │ LT4 LT3 LT2 LT1 LT0 │ │ RT0 RT1 RT2 RT3 RT4 │
+  │ LM4 LM3 LM2 LM1 LM0 │ │ RM0 RM1 RM2 RM3 RM4 │
+  │ LB4 LB3 LB2 LB1 LB0 │ │ RB0 RB1 RB2 RB3 RB4 │
+  ╰───────╮ LH2 LH1 LH0 │ │ RH0 RH1 RH2 ╭───────╯
+          ╰─────────────╯ ╰─────────────╯ */
+
+#define COMBO_TERM_FAST 18
+#define COMBO_TERM_SLOW 30
+
+#define COMBO_IDLE_FAST 150
+#define COMBO_IDLE_SLOW 50
+
+ZMK_COMBO(mouse, &smart_mouse, LT2 LT1, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(ldr,   &leader,      LT1 LT0, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+/* Numbers (vertical column chords) */
+ZMK_COMBO(combo_5, &kp N5,  LM4 LT4, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_4, &kp N4,  LM3 LT3, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_3, &kp N3,  LM2 LT2, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_2, &kp N2,  LM1 LT1, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_1, &kp N1,  LM0 LT0, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+
+ZMK_COMBO(combo_0, &kp N0,  RM0 RT0, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_9, &kp N9,  RM1 RT1, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_8, &kp N8,  RM2 RT2, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_7, &kp N7,  RM3 RT3, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_6, &kp N6,  RM4 RT4, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+
+/* Brackets */
+ZMK_COMBO(combo_lprn, &kp LPAR, LM2 LM1, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_rprn, &kp RPAR, RM1 RM2, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_lbrc, &kp LBKT, LM1 LM0, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_rbrc, &kp RBKT, RM0 RM1, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_lcbr, &kp LBRC, LM4 LM3, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_rcbr, &kp RBRC, RM3 RM4, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_lt,   &kp LT,   LM3 LM2, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_gt,   &kp GT,   RM2 RM3, QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+/* Letters / misc */
+ZMK_COMBO(combo_caps, &kp CAPS,  LB4 LB3 LB2 LB1, QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_grv,  &kp GRAVE, LM0 LB0,         QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_mins, &kp MINUS, RB1 RB2,         QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_eql,  &kp EQUAL, RB2 RB3,         QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_bsls, &kp BSLH,  RM1 RB1,         QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_esc2, &kp ESC,   LT3 LT2,         QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_quot, &kp SQT,   RM0 RB0,         QWERTY LOWER, COMBO_TERM_SLOW, COMBO_IDLE_SLOW)
+ZMK_COMBO(combo_bspc, &kp BSPC,  RT1 RT2,         QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+ZMK_COMBO(combo_del,  &kp DEL,   RT2 RT3,         QWERTY LOWER, COMBO_TERM_FAST, COMBO_IDLE_FAST)
